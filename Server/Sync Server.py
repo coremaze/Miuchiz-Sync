@@ -114,6 +114,15 @@ def HandleConnection(connection):
             c.send(resp)
 
         elif packet_id == CLIENT_REQUEST_CHARACTER_PACKET:
+            if connection.stage != 3:
+                c.close()
+                return
+            connection.stage = 4
+
+            if not c.Character:
+                c.close()
+                return
+            
             resp = b''
             resp += struct.pack('I', (SERVER_CHARACTER_UPDATE_PACKET))
             resp += struct.pack('I', (0x14 + len(c.characterData)))
@@ -122,10 +131,10 @@ def HandleConnection(connection):
             resp += b'\x01\x00\x00\x00'
             
 ##            Some things can be changed and saved if you want.
-##            c.Character.creditz = 12345678
+##            c.Character.creditz = 99999999
 ##            c.Character.happiness = 100
-##            c.Character.hunger = 25
-##            c.Character.boredom = 75
+##            c.Character.hunger = 100
+##            c.Character.boredom = 100
             d = c.Character.Output()
             resp += d
             
