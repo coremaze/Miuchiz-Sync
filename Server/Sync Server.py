@@ -146,17 +146,13 @@ def HandleConnection(connection):
             return
 
 connections = []        
-def TestPacket():
+def Logoff():
+    #This is a custom packet and will not work on the original executable.
     global connections
     c = connections[-1]
     resp = b''
-    resp += struct.pack('I', (0x50001)) #Packet ID
-    resp += b'\x35\x00\x00\x00' #Length
-    resp += b'\x00\x00\x00\x00'
-    resp += b'\x00\x00\x00\x00'
-    resp += b'\x01\x00\x00\x00'
-    resp += b'[Miuchiz Sync]\r\nVersion=1.0.0.67'
-    resp += b'\x00'
+    resp += struct.pack('I', (0x10002)) #Packet ID
+    resp += b'\x08\x00\x00\x00' #Length
     c.send(resp)
 
 def Ping():
