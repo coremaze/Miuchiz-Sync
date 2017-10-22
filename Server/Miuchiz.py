@@ -41,34 +41,40 @@ class Character():
         self.char_data = char_data
         self.unit = char_data[0x48]
         self.creditz = readshittyint(char_data[0x4A : 0x4E])
-        
+
+        #Happiness, hunger, and boredom are all integers which range from
+        #0 to 0x80000000. They will be converted to floats between
+        #0 and 100 for usage in this program.
         self.happiness = struct.unpack("I", char_data[0x4E : 0x52])[0]
-        self.happiness = nmap(self.happiness, 0, 0x80000000, 0, 100)
+        self.happiness = nmap(self.happiness, 0, 0x7FFFFFFF, 0, 100)
         
         self.hunger = struct.unpack("I", char_data[0x52 : 0x56])[0]
-        self.hunger = nmap(self.hunger, 0, 0x80000000, 0, 100)
+        self.hunger = nmap(self.hunger, 0, 0x7FFFFFFF, 0, 100)
         
         self.boredom = struct.unpack("I", char_data[0x56 : 0x5A])[0]
-        self.boredom = nmap(self.boredom, 0, 0x80000000, 0, 100)
+        self.boredom = nmap(self.boredom, 0, 0x7FFFFFFF, 0, 100)
         
     def Output(self):
-        data = self.char_data
-        data = list(data)
+        data = list(self.char_data)
+        
         data[0x4A : 0x4E] = makeshittyint(self.creditz, 4)
 
-        happiness = nmap(self.happiness, 0, 100, 0, 0x80000000)
+        happiness = nmap(self.happiness, 0, 100, 0, 0x7FFFFFFF)
         data[0x4E : 0x52] = struct.pack("I", happiness)
 
-        hunger = nmap(self.hunger, 0, 100, 0, 0x80000000)
+        hunger = nmap(self.hunger, 0, 100, 0, 0x7FFFFFFF)
         data[0x52 : 0x56] = struct.pack("I", hunger)
 
-        boredom = nmap(self.boredom, 0, 100, 0, 0x80000000)
+        boredom = nmap(self.boredom, 0, 100, 0, 0x7FFFFFFF)
         data[0x56 : 0x5A] = struct.pack("I", boredom)
 
-        data = bytes(data)
-        return data
+        return bytes(data)
+    
     def Info(self):
         print('Type: %s' % characters[self.unit])
         print('Creditz: %s' % self.creditz)
+        print('Happiness: %0.2f' % self.happiness)
+        print('Hunger: %0.2f' % self.hunger)
+        print('Boredom: %0.2f' % self.boredom)
 
             
